@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const initialItems = [
   { id: 1, description: "Passports", quantity: 2, packed: false },
   { id: 2, description: "Socks", quantity: 12, packed: true },
@@ -5,11 +7,17 @@ const initialItems = [
 ];
 
 function App() {
+  const [initialItems, setInitialItems] = useState([
+    { id: 1, description: "Passports", quantity: 2, packed: false },
+    { id: 2, description: "Socks", quantity: 12, packed: true },
+    { id: 3, description: "Charger", quantity: 1, packed: false },
+  ]);
+
   return (
     <div className="app">
       <Logo />
-      <Form />
-      <PackingList />
+      <Form setInitialItems={setInitialItems} />
+      <PackingList initialItems={initialItems} />
       <Stats />
     </div>
   );
@@ -19,28 +27,48 @@ function Logo() {
   return <h1>🌴 Far Away 💼</h1>;
 }
 
-function Form() {
+function Form({ setInitialItems }) {
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState(1);
+
   function handleSubmit(e) {
     e.preventDefault();
+
+    if (!description) return;
+
+    const newItem = { quantity, description, packed: false, id: Date.now() };
+    console.log(newItem);
+    setInitialItems((s) => s.push(newItem));
+    setDescription("");
+    setQuantity(1);
   }
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
       <h3>What do you need for your 😍 trip?</h3>
-      <select name="" id="">
+      <select
+        name=""
+        id=""
+        value={quantity}
+        onChange={(e) => setQuantity(Number(e.target.value))}>
         {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
           <option value={num} key={num}>
             {num}
           </option>
         ))}
       </select>
-      <input type="text" placeholder="item..." />
+      <input
+        type="text"
+        placeholder="item..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
       <button>Add</button>
     </form>
   );
 }
 
-function PackingList() {
+function PackingList({ initialItems }) {
   return (
     <div className="list">
       <ul>
