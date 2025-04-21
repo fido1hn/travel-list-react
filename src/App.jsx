@@ -20,7 +20,11 @@ function App() {
   }
 
   function handleClearList() {
-    setItems([]);
+    const confirmed = window.confirm(
+      "Are you sure you want to clear the list?"
+    );
+
+    if (confirmed) setItems([]);
   }
 
   return (
@@ -52,7 +56,6 @@ function Form({ onAddItem }) {
     if (!description) return;
 
     const newItem = { quantity, description, packed: false, id: Date.now() };
-    console.log(newItem);
 
     onAddItem(newItem);
 
