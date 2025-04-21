@@ -1,23 +1,21 @@
 import { useState } from "react";
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: true },
-  { id: 3, description: "Charger", quantity: 1, packed: false },
-];
-
 function App() {
-  const [initialItems, setInitialItems] = useState([
+  const [items, setItems] = useState([
     { id: 1, description: "Passports", quantity: 2, packed: false },
     { id: 2, description: "Socks", quantity: 12, packed: true },
     { id: 3, description: "Charger", quantity: 1, packed: false },
   ]);
 
+  function handleAddItem(item) {
+    setItems((items) => [...items, item]);
+  }
+
   return (
     <div className="app">
       <Logo />
-      <Form setInitialItems={setInitialItems} />
-      <PackingList initialItems={initialItems} />
+      <Form onAddItem={handleAddItem} />
+      <PackingList items={items} />
       <Stats />
     </div>
   );
@@ -27,7 +25,7 @@ function Logo() {
   return <h1>🌴 Far Away 💼</h1>;
 }
 
-function Form({ setInitialItems }) {
+function Form({ onAddItem }) {
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
 
@@ -38,7 +36,9 @@ function Form({ setInitialItems }) {
 
     const newItem = { quantity, description, packed: false, id: Date.now() };
     console.log(newItem);
-    setInitialItems((s) => s.push(newItem));
+
+    onAddItem(newItem);
+
     setDescription("");
     setQuantity(1);
   }
@@ -68,11 +68,11 @@ function Form({ setInitialItems }) {
   );
 }
 
-function PackingList({ initialItems }) {
+function PackingList({ items }) {
   return (
     <div className="list">
       <ul>
-        {initialItems.map((item) => (
+        {items.map((item) => (
           <Item item={item} key={item.id} />
         ))}
       </ul>
